@@ -21,12 +21,29 @@ class Sockets {
             //emitir al cliente todas las bandas
             socket.emit('current-bands', this.bandList.getBands());
 
-            // Escuchar evento: mensaje-to-server
-            /* socket.on('mensaje-to-server', ( data ) => {
-                console.log( data );
-                this.io.emit('mensaje-from-server', data );
-            }); */
+            //votar por la banda
+            socket.on('votar-banda', (id) => {
+                this.bandList.increaseVotes( id );
+                this.io.emit('current-bands', this.bandList.getBands());
+            })
             
+            //borrar banda
+            socket.on('borrar-banda', (id) => {
+                this.bandList.removeBand( id );
+                this.io.emit('current-bands', this.bandList.getBands());
+            })
+
+            //cambiar-nombre-banda
+            socket.on('cambiar-nombre-banda', ({id, nombre}) => {
+                this.bandList.changeName( id, nombre );
+                this.io.emit('current-bands', this.bandList.getBands());
+            })
+
+            //cambiar-nombre-banda
+            socket.on('crear-banda', ({nombre}) => {
+                this.bandList.addBand( nombre );
+                this.io.emit('current-bands', this.bandList.getBands());
+            })
         
         });
     }
